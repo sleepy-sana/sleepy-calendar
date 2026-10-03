@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>sleepy calendar</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header class="header">
+
+      <div>
+        <h1>🌙 sleepy calendar</h1>
+        <p>my personal calendar</p>
+      </div>
+
+      <button id="todayButton">
+        今日
+      </button>
+
+    </header>
+
+
+    <main class="main">
+
+      <!-- Calendar -->
+
+      <section class="calendar card">
+
+        <div class="calendar-header">
+
+          <button id="prevMonth">
+            ‹
+          </button>
+
+          <h2 id="monthTitle"></h2>
+
+          <button id="nextMonth">
+            ›
+          </button>
+
+        </div>
+
+
+        <div class="weekdays">
+
+          <span>日</span>
+          <span>月</span>
+          <span>火</span>
+          <span>水</span>
+          <span>木</span>
+          <span>金</span>
+          <span>土</span>
+
+        </div>
+
+
+        <div
+          id="calendarGrid"
+          class="calendar-grid"
+        ></div>
+
+      </section>
+
+
+      <!-- Side -->
+
+      <aside>
+
+        <!-- Selected day -->
+
+        <section class="card">
+
+          <div class="section-header">
+
+            <div>
+
+              <small>SELECTED DAY</small>
+
+              <h2 id="selectedDate"></h2>
+
+            </div>
+
+            <button
+              id="addEvent"
+              class="primary"
+            >
+              ＋ 予定
+            </button>
+
+          </div>
+
+
+          <div id="events"></div>
+
+
+          <button
+            id="addMemo"
+            class="secondary"
+          >
+            ＋ メモ
+          </button>
+
+        </section>
+
+
+        <!-- Period -->
+
+        <section class="card">
+
+          <small>PERIOD</small>
+
+          <h2>🌸 生理管理</h2>
+
+
+          <div class="period-info">
+
+            <div>
+              <span>直近開始日</span>
+              <strong id="lastPeriod">
+                未登録
+              </strong>
+            </div>
+
+            <div>
+              <span>平均周期</span>
+              <strong id="averageCycle">
+                —
+              </strong>
+            </div>
+
+            <div>
+              <span>次回予測</span>
+              <strong id="nextPeriod">
+                —
+              </strong>
+            </div>
+
+          </div>
+
+
+          <button
+            id="addPeriod"
+            class="secondary"
+          >
+            🌸 今日を開始日にする
+          </button>
+
+
+          <div id="periodHistory"></div>
+
+        </section>
+
+
+        <!-- Todo -->
+
+        <section class="card">
+
+          <small>TODO</small>
+
+          <h2>やること</h2>
+
+
+          <form id="todoForm">
+
+            <input
+              id="todoInput"
+              type="text"
+              placeholder="ToDoを追加…"
+            >
+
+            <button class="primary">
+              追加
+            </button>
+
+          </form>
+
+
+          <div id="todoList"></div>
+
+        </section>
+
+      </aside>
+
+    </main>
+
+  </div>
+
+
+  <!-- Event dialog -->
+
+  <dialog id="eventDialog">
+
+    <form id="eventForm">
+
+      <h2>予定を追加</h2>
+
+
+      <label>
+        日付
+
+        <input
+          id="eventDate"
+          type="date"
+          required
+        >
+
+      </label>
+
+
+      <label>
+        時間
+
+        <input
+          id="eventTime"
+          type="time"
+        >
+
+      </label>
+
+
+      <label>
+        タイトル
+
+        <input
+          id="eventTitle"
+          type="text"
+          placeholder="予定の名前"
+          required
+        >
+
+      </label>
+
+
+      <div class="dialog-buttons">
+
+        <button
+          type="button"
+          id="closeEvent"
+          class="secondary"
+        >
+          キャンセル
+        </button>
+
+        <button
+          class="primary"
+          type="submit"
+        >
+          保存
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+
+  <!-- Memo dialog -->
+
+  <dialog id="memoDialog">
+
+    <form id="memoForm">
+
+      <h2>メモを追加</h2>
+
+      <textarea
+        id="memoText"
+        placeholder="今日のメモ…"
+        required
+      ></textarea>
+
+
+      <div class="dialog-buttons">
+
+        <button
+          type="button"
+          id="closeMemo"
+          class="secondary"
+        >
+          キャンセル
+        </button>
+
+        <button
+          class="primary"
+          type="submit"
+        >
+          保存
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+
+  <script src="app.js"></script>
+
+</body>
+</html>
