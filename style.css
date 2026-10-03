@@ -1299,3 +1299,167 @@ textarea::placeholder {
 .event-mark.event-green {
   background: #b9e3cf;
 }
+
+/* =========================
+   🌙 Sleepy Calendar Decor
+========================= */
+
+/* カレンダー全体をほんのり夜空っぽく */
+.calendar-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 月 */
+.calendar-card::before {
+  content: "☾";
+  position: absolute;
+  top: 12px;
+  right: 22px;
+  font-family: Arial, sans-serif;
+  font-size: 30px;
+  color: #c9e8f6;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* きらきら */
+.calendar-card::after {
+  content: "✦ ･ﾟ✧";
+  position: absolute;
+  top: 18px;
+  right: 62px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #d9c9ed;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* カレンダーのタイトルを少し特別に */
+.calendar-header h2 {
+  position: relative;
+  z-index: 1;
+}
+
+/* 日付セル */
+.calendar-day {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+/* マウスを乗せたとき */
+.calendar-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(160, 205, 225, 0.18);
+}
+
+/* 選択中の日 */
+.calendar-day.selected {
+  box-shadow:
+    0 0 0 2px rgba(185, 230, 247, 0.55),
+    0 6px 16px rgba(160, 205, 225, 0.2);
+}
+
+/* 今日の日付 */
+.calendar-day.today {
+  box-shadow:
+    0 0 0 2px rgba(247, 223, 161, 0.65),
+    0 5px 14px rgba(247, 223, 161, 0.18);
+}
+
+/* 予定の点 */
+.event-marks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+/* 予定の点をふわっと */
+.event-mark {
+  animation: sleepyTwinkle 2.8s ease-in-out infinite;
+}
+
+.event-mark:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.event-mark:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+.event-mark:nth-child(4) {
+  animation-delay: 0.9s;
+}
+
+/* 予定カード */
+.event-item {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* 予定カードにマウスを乗せたとき */
+.event-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(150, 190, 210, 0.18);
+}
+
+/* ふわふわアニメーション */
+@keyframes sleepyTwinkle {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+/* ボタンも少しふわっと */
+.add-button {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(150, 200, 220, 0.2);
+}
+
+.add-button:active {
+  transform: translateY(0);
+}
+
+/* スマホでは装飾を控えめに */
+@media (max-width: 600px) {
+  .calendar-card::before {
+    top: 10px;
+    right: 14px;
+    font-size: 24px;
+  }
+
+  .calendar-card::after {
+    top: 14px;
+    right: 48px;
+    font-size: 10px;
+  }
+
+  .calendar-day:hover {
+    transform: none;
+  }
+
+  .event-item:hover {
+    transform: none;
+  }
+}
