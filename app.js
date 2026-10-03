@@ -259,15 +259,11 @@ function editEvent(id) {
 
   if (!event) return;
 
-  document.getElementById("eventDate").value =
-    event.date;
-
-  document.getElementById("eventTime").value =
-    event.time || "";
-
-  document.getElementById("eventTitle").value =
-    event.title || "";
-
+  document.getElementById("eventDate").value = event.date;
+document.getElementById("eventTime").value = event.time;
+document.getElementById("eventTitle").value = event.title;
+document.getElementById("eventColor").value = event.color || "blue";
+  
   const dialog =
     document.getElementById("eventDialog");
 
