@@ -383,11 +383,12 @@ if (eventForm) {
 
     else {
       data.events.push({
-        id: Date.now(),
-        date: date,
-        time: time,
-        title: title
-      });
+  id: Date.now(),
+  date,
+  time,
+  title,
+  color: document.getElementById("eventColor").value
+});
     }
 
     save();
