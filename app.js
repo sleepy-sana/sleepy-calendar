@@ -175,7 +175,23 @@ const eventForm = document.getElementById("eventForm");
 const eventDate = document.getElementById("eventDate");
 const eventTime = document.getElementById("eventTime");
 const eventTitle = document.getElementById("eventTitle");
-const eventColor = document.getElementById("eventColor");
+function getSelectedEventColor() {
+  const selected = document.querySelector(
+    'input[name="eventColor"]:checked'
+  );
+
+  return selected ? selected.value : "blue";
+}
+
+function setSelectedEventColor(color) {
+  const target = document.querySelector(
+    `input[name="eventColor"][value="${color}"]`
+  );
+
+  if (target) {
+    target.checked = true;
+  }
+}
 
 const addEventButton = document.getElementById("addEvent");
 const closeEventButton = document.getElementById("closeEvent");
@@ -216,10 +232,12 @@ if (eventForm) {
     const time = eventTime.value;
     const title = eventTitle.value.trim();
 
-    const color =
-      EVENT_COLORS.includes(eventColor.value)
-        ? eventColor.value
-        : "blue";
+    const selectedColor = getSelectedEventColor();
+
+const color =
+  EVENT_COLORS.includes(selectedColor)
+    ? selectedColor
+    : "blue";
 
     if (!date || !title) {
       return;
@@ -363,10 +381,11 @@ function editEvent(id) {
   eventTime.value = event.time || "";
   eventTitle.value = event.title || "";
 
-  eventColor.value =
-    EVENT_COLORS.includes(event.color)
-      ? event.color
-      : "blue";
+  setSelectedEventColor(
+  EVENT_COLORS.includes(event.color)
+    ? event.color
+    : "blue"
+);
 
   eventDialog.dataset.editingId = event.id;
 
