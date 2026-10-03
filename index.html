@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
 
@@ -11,457 +10,584 @@
 
   <title>sleepy calendar</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- ==========================
-       ヘッダー
-  =========================== -->
+  <div class="app">
 
-  <header class="header">
+    <!-- =========================
+         Header
+    ========================== -->
 
-    <div>
-      <h1>🌙 sleepy calendar</h1>
-      <p>ゆっくり、かわいく、予定を管理。</p>
-    </div>
+    <header class="header">
 
-    <button
-      id="todayButton"
-      class="today-button"
-    >
-      今日
-    </button>
-
-  </header>
-
-
-  <main class="container">
-
-    <!-- ==========================
-         カレンダー
-    =========================== -->
-
-    <section class="calendar-card">
-
-      <div class="calendar-header">
-
-        <button
-          id="prevMonth"
-          class="nav-button"
-        >
-          ‹
-        </button>
-
-        <h2 id="monthTitle"></h2>
-
-        <button
-          id="nextMonth"
-          class="nav-button"
-        >
-          ›
-        </button>
-
+      <div class="logo-area">
+        <div class="logo">sleepy calendar</div>
+        <div class="subtitle">☁️ little plans, soft days 🌙</div>
       </div>
 
+      <button
+        type="button"
+        id="todayButton"
+        class="today-button"
+      >
+        今日
+      </button>
 
-      <!-- 曜日 -->
-
-      <div class="weekdays">
-
-        <div>日</div>
-        <div>月</div>
-        <div>火</div>
-        <div>水</div>
-        <div>木</div>
-        <div>金</div>
-        <div>土</div>
-
-      </div>
+    </header>
 
 
-      <!-- 日付 -->
+    <!-- =========================
+         Main
+    ========================== -->
 
-      <div
-        id="calendarGrid"
-        class="calendar-grid"
-      ></div>
-
-    </section>
+    <main class="main-layout">
 
 
-    <!-- ==========================
-         サイド
-    =========================== -->
+      <!-- =========================
+           Calendar
+      ========================== -->
 
-    <aside class="side">
+      <section class="calendar-card">
 
-      <!-- ========================
-           選択した日
-      ========================= -->
-
-      <section class="card">
-
-        <div class="card-header">
-
-          <div>
-
-            <p class="small-title">
-              SELECTED DAY
-            </p>
-
-            <h2 id="selectedDate">
-              日付
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <!-- 予定 -->
-
-        <div class="section-title-row">
-
-          <h3>📅 予定</h3>
+        <div class="calendar-header">
 
           <button
-            id="addEvent"
-            class="add-button"
+            type="button"
+            id="prevMonth"
+            class="month-button"
           >
-            ＋
+            ‹
+          </button>
+
+          <h1 id="monthTitle">
+            2026年 10月
+          </h1>
+
+          <button
+            type="button"
+            id="nextMonth"
+            class="month-button"
+          >
+            ›
           </button>
 
         </div>
 
 
-        <div
-          id="events"
-          class="events"
-        ></div>
+        <div class="weekdays">
 
-
-        <!-- メモ -->
-
-        <div class="section-title-row memo-title">
-
-          <h3>📝 メモ</h3>
-
-          <button
-            id="addMemo"
-            class="add-button"
-          >
-            ＋
-          </button>
+          <div>日</div>
+          <div>月</div>
+          <div>火</div>
+          <div>水</div>
+          <div>木</div>
+          <div>金</div>
+          <div>土</div>
 
         </div>
 
 
         <div
-          id="memos"
-          class="memos"
+          id="calendarGrid"
+          class="calendar-grid"
         ></div>
 
-      </section>
 
-
-      <!-- ========================
-           生理管理
-      ========================= -->
-
-      <section class="card">
-
-        <div class="section-title-row">
-
-          <h3>🌸 生理管理</h3>
-
+        <div class="calendar-note">
+          <span class="legend-dot blue"></span>
+          予定
+          <span class="legend-dot period"></span>
+          生理
         </div>
-
-
-        <div class="period-info">
-
-          <div class="period-box">
-
-            <span>
-              最終開始日
-            </span>
-
-            <strong id="lastPeriod">
-              未登録
-            </strong>
-
-          </div>
-
-
-          <div class="period-box">
-
-            <span>
-              平均周期
-            </span>
-
-            <strong id="averageCycle">
-              —
-            </strong>
-
-          </div>
-
-
-          <div class="period-box">
-
-            <span>
-              次回予測
-            </span>
-
-            <strong id="nextPeriod">
-              —
-            </strong>
-
-          </div>
-
-        </div>
-
-
-        <button
-          id="addPeriod"
-          class="primary-button"
-        >
-          🌸 今日を開始日として記録
-        </button>
-
-
-        <h4>
-          生理履歴
-        </h4>
-
-        <div
-          id="periodHistory"
-          class="period-history"
-        ></div>
 
       </section>
 
 
-      <!-- ========================
-           ToDo
-      ========================= -->
+      <!-- =========================
+           Side
+      ========================== -->
 
-      <section class="card">
-
-        <div class="section-title-row">
-
-          <h3>✅ ToDo</h3>
-
-        </div>
+      <aside class="side">
 
 
-        <form
-          id="todoForm"
-          class="todo-form"
-        >
+        <!-- Selected Date -->
 
-          <input
-            id="todoInput"
-            type="text"
-            placeholder="やることを入力..."
-            autocomplete="off"
+        <section class="card selected-card">
+
+          <div class="card-label">
+            SELECTED DAY
+          </div>
+
+          <div
+            id="selectedDate"
+            class="selected-date"
+          >
+            -
+          </div>
+
+        </section>
+
+
+        <!-- =========================
+             Events
+        ========================== -->
+
+        <section class="card">
+
+          <div class="card-title-row">
+
+            <div>
+              <div class="card-label">
+                EVENTS
+              </div>
+
+              <h2>予定 🌙</h2>
+            </div>
+
+            <button
+              type="button"
+              id="addEvent"
+              class="add-button"
+            >
+              ＋
+            </button>
+
+          </div>
+
+
+          <div
+            id="events"
+            class="event-list"
+          ></div>
+
+        </section>
+
+
+        <!-- =========================
+             Memo
+        ========================== -->
+
+        <section class="card">
+
+          <div class="card-title-row">
+
+            <div>
+              <div class="card-label">
+                MEMO
+              </div>
+
+              <h2>メモ 📝</h2>
+            </div>
+
+            <button
+              type="button"
+              id="addMemo"
+              class="add-button"
+            >
+              ＋
+            </button>
+
+          </div>
+
+
+          <div
+            id="memos"
+            class="memo-list"
+          ></div>
+
+        </section>
+
+
+        <!-- =========================
+             Period
+        ========================== -->
+
+        <section class="card">
+
+          <div class="card-title-row">
+
+            <div>
+              <div class="card-label">
+                PERIOD
+              </div>
+
+              <h2>生理記録 🌷</h2>
+            </div>
+
+            <button
+              type="button"
+              id="addPeriod"
+              class="small-button"
+            >
+              記録
+            </button>
+
+          </div>
+
+
+          <div class="period-info">
+
+            <div class="period-row">
+              <span>最後の開始日</span>
+              <strong id="lastPeriod">
+                未登録
+              </strong>
+            </div>
+
+            <div class="period-row">
+              <span>平均周期</span>
+              <strong id="averageCycle">
+                未登録
+              </strong>
+            </div>
+
+            <div class="period-row">
+              <span>次回の予測</span>
+              <strong id="nextPeriod">
+                未登録
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="period-history-title">
+            HISTORY
+          </div>
+
+          <div
+            id="periodHistory"
+            class="period-history"
+          ></div>
+
+        </section>
+
+
+        <!-- =========================
+             Todo
+        ========================== -->
+
+        <section class="card">
+
+          <div class="card-label">
+            TODO
+          </div>
+
+          <h2>やること 💤</h2>
+
+
+          <form
+            id="todoForm"
+            class="todo-form"
           >
 
-          <button
-            type="submit"
-            class="add-button"
-          >
-            ＋
-          </button>
+            <input
+              id="todoInput"
+              type="text"
+              placeholder="やることを入力..."
+              autocomplete="off"
+            >
 
-        </form>
+            <button
+              type="submit"
+              class="add-button"
+            >
+              ＋
+            </button>
 
-
-        <ul
-          id="todoList"
-          class="todo-list"
-        ></ul>
-
-      </section>
-
-    </aside>
-
-  </main>
+          </form>
 
 
-  <!-- ==========================
-       予定追加・編集ダイアログ
-  =========================== -->
+          <div
+            id="todoList"
+            class="todo-list"
+          ></div>
 
-  <dialog
-    id="eventDialog"
-    class="dialog"
-  >
-
-    <form
-      id="eventForm"
-      method="dialog"
-    >
-
-      <h2>📅 予定</h2>
+        </section>
 
 
-      <label>
-        日付
+      </aside>
 
-        <input
-          id="eventDate"
-          type="date"
-          required
-        >
+    </main>
 
-      </label>
-
-
-      <label>
-        時間
-
-        <input
-          id="eventTime"
-          type="time"
-        >
-
-      </label>
-
-
-      <label>
-        予定
-
-        <input
-          id="eventTitle"
-          type="text"
-          placeholder="例：Twitch配信"
-          required
-          autocomplete="off"
-        >
-        
-<div class="event-color-picker">
-  <span class="color-picker-label">予定の色 🌙</span>
-
-  <div class="color-options">
-    <label class="color-option color-blue">
-      <input type="radio" name="eventColor" value="blue" checked>
-      <span class="color-dot"></span>
-      <span class="color-name">sky</span>
-    </label>
-
-    <label class="color-option color-pink">
-      <input type="radio" name="eventColor" value="pink">
-      <span class="color-dot"></span>
-      <span class="color-name">dream</span>
-    </label>
-
-    <label class="color-option color-purple">
-      <input type="radio" name="eventColor" value="purple">
-      <span class="color-dot"></span>
-      <span class="color-name">moon</span>
-    </label>
-
-    <label class="color-option color-yellow">
-      <input type="radio" name="eventColor" value="yellow">
-      <span class="color-dot"></span>
-      <span class="color-name">star</span>
-    </label>
-
-    <label class="color-option color-green">
-      <input type="radio" name="eventColor" value="green">
-      <span class="color-dot"></span>
-      <span class="color-name">mint</span>
-    </label>
   </div>
-</div>
-        
-      </label>
 
 
-      <div class="dialog-buttons">
+  <!-- =========================
+       Event Dialog
+  ========================== -->
+
+  <dialog id="eventDialog">
+
+    <div class="dialog-content">
+
+      <div class="dialog-header">
+
+        <div>
+          <div class="card-label">
+            NEW PLAN
+          </div>
+
+          <h2>予定を追加 🌙</h2>
+        </div>
 
         <button
           type="button"
           id="closeEvent"
-          class="cancel-button"
+          class="dialog-close"
         >
-          キャンセル
-        </button>
-
-        <button
-          type="submit"
-          class="primary-button"
-        >
-          保存
+          ×
         </button>
 
       </div>
 
-    </form>
+
+      <form id="eventForm">
+
+        <!-- 日付 -->
+
+        <label class="form-label">
+
+          日付
+
+          <input
+            id="eventDate"
+            type="date"
+            required
+          >
+
+        </label>
+
+
+        <!-- 時間 -->
+
+        <label class="form-label">
+
+          時間
+
+          <input
+            id="eventTime"
+            type="time"
+          >
+
+        </label>
+
+
+        <!-- 予定 -->
+
+        <label class="form-label">
+
+          予定
+
+          <input
+            id="eventTitle"
+            type="text"
+            placeholder="予定の名前..."
+            autocomplete="off"
+            required
+          >
+
+        </label>
+
+
+        <!-- =========================
+             Cute Color Picker
+        ========================== -->
+
+        <div class="event-color-picker">
+
+          <span class="color-picker-label">
+            予定の色 🌙
+          </span>
+
+
+          <div class="color-options">
+
+
+            <!-- Blue -->
+
+            <label class="color-option color-blue">
+
+              <input
+                type="radio"
+                name="eventColor"
+                value="blue"
+                checked
+              >
+
+              <span class="color-dot"></span>
+
+              <span class="color-name">
+                sky
+              </span>
+
+            </label>
+
+
+            <!-- Pink -->
+
+            <label class="color-option color-pink">
+
+              <input
+                type="radio"
+                name="eventColor"
+                value="pink"
+              >
+
+              <span class="color-dot"></span>
+
+              <span class="color-name">
+                dream
+              </span>
+
+            </label>
+
+
+            <!-- Purple -->
+
+            <label class="color-option color-purple">
+
+              <input
+                type="radio"
+                name="eventColor"
+                value="purple"
+              >
+
+              <span class="color-dot"></span>
+
+              <span class="color-name">
+                moon
+              </span>
+
+            </label>
+
+
+            <!-- Yellow -->
+
+            <label class="color-option color-yellow">
+
+              <input
+                type="radio"
+                name="eventColor"
+                value="yellow"
+              >
+
+              <span class="color-dot"></span>
+
+              <span class="color-name">
+                star
+              </span>
+
+            </label>
+
+
+            <!-- Green -->
+
+            <label class="color-option color-green">
+
+              <input
+                type="radio"
+                name="eventColor"
+                value="green"
+              >
+
+              <span class="color-dot"></span>
+
+              <span class="color-name">
+                mint
+              </span>
+
+            </label>
+
+
+          </div>
+
+        </div>
+
+
+        <!-- 保存 -->
+
+        <button
+          type="submit"
+          class="save-button"
+        >
+          予定を保存 💤
+        </button>
+
+      </form>
+
+    </div>
 
   </dialog>
 
 
-  <!-- ==========================
-       メモ追加ダイアログ
-  =========================== -->
+  <!-- =========================
+       Memo Dialog
+  ========================== -->
 
-  <dialog
-    id="memoDialog"
-    class="dialog"
-  >
+  <dialog id="memoDialog">
 
-    <form
-      id="memoForm"
-      method="dialog"
-    >
+    <div class="dialog-content">
 
-      <h2>📝 メモ</h2>
+      <div class="dialog-header">
 
+        <div>
+          <div class="card-label">
+            LITTLE NOTE
+          </div>
 
-      <label>
-        メモ
-
-        <textarea
-          id="memoText"
-          placeholder="ここにメモを書いてね..."
-          rows="5"
-          required
-        ></textarea>
-
-      </label>
-
-
-      <div class="dialog-buttons">
+          <h2>メモを追加 📝</h2>
+        </div>
 
         <button
           type="button"
           id="closeMemo"
-          class="cancel-button"
+          class="dialog-close"
         >
-          キャンセル
-        </button>
-
-        <button
-          type="submit"
-          class="primary-button"
-        >
-          保存
+          ×
         </button>
 
       </div>
 
-    </form>
+
+      <form id="memoForm">
+
+        <label class="form-label">
+
+          メモ
+
+          <textarea
+            id="memoText"
+            rows="5"
+            placeholder="ここにメモを書いてね..."
+            required
+          ></textarea>
+
+        </label>
+
+
+        <button
+          type="submit"
+          class="save-button"
+        >
+          メモを保存 📝
+        </button>
+
+      </form>
+
+    </div>
 
   </dialog>
 
 
+  <!-- =========================
+       JavaScript
+  ========================== -->
+
   <script src="app.js"></script>
 
 </body>
-
 </html>
