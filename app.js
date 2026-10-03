@@ -1,9 +1,11 @@
-// =========================
+// ==============================
 // sleepy calendar
 // app.js
-// =========================
+// ==============================
 
-let data = JSON.parse(localStorage.getItem("sleepyCalendar")) || {
+let data = JSON.parse(
+  localStorage.getItem("sleepyCalendar")
+) || {
   events: [],
   memos: [],
   todos: [],
@@ -23,6 +25,14 @@ const EVENT_COLORS = [
   "green"
 ];
 
+let currentDate = new Date();
+let selectedDate = formatDate(new Date());
+
+
+// ==============================
+// 基本
+// ==============================
+
 function saveData() {
   localStorage.setItem(
     "sleepyCalendar",
@@ -30,41 +40,37 @@ function saveData() {
   );
 }
 
-
-// =========================
-// Utility
-// =========================
-
 function formatDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
 
-  return `${year}-${month}-${day}`;
+  return `${y}-${m}-${d}`;
 }
 
-function formatDisplayDate(dateString) {
+function formatJapaneseDate(dateString) {
+  if (!dateString) return "";
+
   const date = new Date(dateString + "T00:00:00");
 
-  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return `${date.getFullYear()}年${
+    date.getMonth() + 1
+  }月${date.getDate()}日`;
 }
 
 
-// =========================
-// Calendar
-// =========================
+// ==============================
+// DOM
+// ==============================
 
-let currentDate = new Date();
-let selectedDate = formatDate(new Date());
+const todayButton =
+  document.getElementById("todayButton");
+
+const prevMonth =
+  document.getElementById("prevMonth");
+
+const nextMonth =
+  document.getElementById("nextMonth");
 
 const monthTitle =
   document.getElementById("monthTitle");
@@ -72,9 +78,113 @@ const monthTitle =
 const calendarGrid =
   document.getElementById("calendarGrid");
 
-const selectedDateText =
+const selectedDateElement =
   document.getElementById("selectedDate");
 
+const addEventButton =
+  document.getElementById("addEvent");
+
+const eventsElement =
+  document.getElementById("events");
+
+const eventDialog =
+  document.getElementById("eventDialog");
+
+const eventForm =
+  document.getElementById("eventForm");
+
+const eventDate =
+  document.getElementById("eventDate");
+
+const eventTime =
+  document.getElementById("eventTime");
+
+const eventTitle =
+  document.getElementById("eventTitle");
+
+const closeEventButton =
+  document.getElementById("closeEvent");
+
+const addMemoButton =
+  document.getElementById("addMemo");
+
+const memosElement =
+  document.getElementById("memos");
+
+const memoDialog =
+  document.getElementById("memoDialog");
+
+const memoForm =
+  document.getElementById("memoForm");
+
+const memoText =
+  document.getElementById("memoText");
+
+const closeMemoButton =
+  document.getElementById("closeMemo");
+
+const todoForm =
+  document.getElementById("todoForm");
+
+const todoInput =
+  document.getElementById("todoInput");
+
+const todoList =
+  document.getElementById("todoList");
+
+const addPeriodButton =
+  document.getElementById("addPeriod");
+
+const lastPeriod =
+  document.getElementById("lastPeriod");
+
+const averageCycle =
+  document.getElementById("averageCycle");
+
+const nextPeriod =
+  document.getElementById("nextPeriod");
+
+const periodHistory =
+  document.getElementById("periodHistory");
+
+
+// ==============================
+// 色
+// ==============================
+
+function getSelectedEventColor() {
+  const radio = document.querySelector(
+    'input[name="eventColor"]:checked'
+  );
+
+  if (
+    radio &&
+    EVENT_COLORS.includes(radio.value)
+  ) {
+    return radio.value;
+  }
+
+  return "blue";
+}
+
+function setSelectedEventColor(color) {
+  if (!EVENT_COLORS.includes(color)) {
+    color = "blue";
+  }
+
+  const radio = document.querySelector(
+    `input[name="eventColor"][value="${color}"]`
+  );
+
+  if (radio) {
+    radio.checked = true;
+  }
+}
+
+
+// ==============================
+// カレンダー
+// ==============================
 
 function renderCalendar() {
   if (!calendarGrid) return;
@@ -95,32 +205,24 @@ function renderCalendar() {
   const lastDate =
     new Date(year, month + 1, 0).getDate();
 
+  const today = formatDate(new Date());
+
   // 前月の空白
   for (let i = 0; i < firstDay; i++) {
-    const emptyCell =
-      document.createElement("div");
-
-    emptyCell.className =
-      "calendar-day empty";
-
-    calendarGrid.appendChild(emptyCell);
+    const empty = document.createElement("div");
+    empty.className = "calendar-day empty";
+    calendarGrid.appendChild(empty);
   }
 
   // 日付
   for (let day = 1; day <= lastDate; day++) {
-    const date =
-      new Date(year, month, day);
+    const date = new Date(year, month, day);
+    const dateString = formatDate(date);
 
-    const dateString =
-      formatDate(date);
+    const cell = document.createElement("div");
+    cell.className = "calendar-day";
 
-    const cell =
-      document.createElement("div");
-
-    cell.className =
-      "calendar-day";
-
-    if (dateString === formatDate(new Date())) {
+    if (dateString === today) {
       cell.classList.add("today");
     }
 
@@ -128,346 +230,88 @@ function renderCalendar() {
       cell.classList.add("selected");
     }
 
-    const number =
-      document.createElement("div");
-
-    number.className =
-      "day-number";
-
+    const number = document.createElement("div");
+    number.className = "day-number";
     number.textContent = day;
 
     cell.appendChild(number);
 
-
-    // -------------------------
-    // 予定
-    // -------------------------
-
+    // 予定マーク
     const dayEvents =
       data.events.filter(
         event => event.date === dateString
       );
 
-    dayEvents.forEach(event => {
-      const mark =
-        document.createElement("span");
+    if (dayEvents.length > 0) {
+      const marks = document.createElement("div");
+      marks.className = "event-marks";
 
-      const color =
-        EVENT_COLORS.includes(event.color)
-          ? event.color
-          : "blue";
+      dayEvents.forEach(event => {
+        const mark = document.createElement("span");
 
-      mark.className =
-        `event-mark event-${color}`;
+        mark.className =
+          `event-mark event-${event.color || "blue"}`;
 
-      cell.appendChild(mark);
-    });
+        marks.appendChild(mark);
+      });
 
+      cell.appendChild(marks);
+    }
 
-    // -------------------------
-    // 生理
-    // -------------------------
-
-    const period =
-      data.periods.find(
-        item => item.start === dateString
-      );
-
-    if (period) {
+    // 生理マーク
+    if (
+      data.periods.some(
+        period => period.date === dateString
+      )
+    ) {
       const periodMark =
         document.createElement("span");
 
       periodMark.className =
         "period-mark";
 
-      periodMark.textContent = "●";
+      periodMark.textContent = "🌷";
 
       cell.appendChild(periodMark);
     }
 
+    cell.addEventListener(
+      "click",
+      () => {
+        selectedDate = dateString;
 
-    // -------------------------
-    // 日付クリック
-    // -------------------------
-
-    cell.addEventListener("click", () => {
-      selectedDate = dateString;
-
-      renderCalendar();
-      renderSelectedDate();
-      renderEvents();
-      renderMemos();
-    });
+        renderCalendar();
+        renderSelectedDate();
+        renderEvents();
+        renderMemos();
+      }
+    );
 
     calendarGrid.appendChild(cell);
   }
 }
 
 
-// =========================
-// Selected Date
-// =========================
+// ==============================
+// 選択日
+// ==============================
 
 function renderSelectedDate() {
-  if (!selectedDateText) return;
+  if (!selectedDateElement) return;
 
-  selectedDateText.textContent =
-    formatDisplayDate(selectedDate);
+  selectedDateElement.textContent =
+    formatJapaneseDate(selectedDate);
 }
 
 
-// =========================
-// Event Color
-// =========================
-
-function getSelectedEventColor() {
-
-  // 新しいパステルボタン方式
-  const radio =
-    document.querySelector(
-      'input[name="eventColor"]:checked'
-    );
-
-  if (radio &&
-      EVENT_COLORS.includes(radio.value)) {
-    return radio.value;
-  }
-
-
-  // 古い select 方式にも対応
-  const select =
-    document.getElementById("eventColor");
-
-  if (select &&
-      EVENT_COLORS.includes(select.value)) {
-    return select.value;
-  }
-
-
-  return "blue";
-}
-
-
-function setSelectedEventColor(color) {
-
-  if (!EVENT_COLORS.includes(color)) {
-    color = "blue";
-  }
-
-
-  // 新しい radio
-  const radio =
-    document.querySelector(
-      `input[name="eventColor"][value="${color}"]`
-    );
-
-  if (radio) {
-    radio.checked = true;
-  }
-
-
-  // 古い select
-  const select =
-    document.getElementById("eventColor");
-
-  if (select) {
-    select.value = color;
-  }
-}
-
-
-// =========================
-// Event Dialog
-// =========================
-
-const eventDialog =
-  document.getElementById("eventDialog");
-
-const eventForm =
-  document.getElementById("eventForm");
-
-const eventDate =
-  document.getElementById("eventDate");
-
-const eventTime =
-  document.getElementById("eventTime");
-
-const eventTitle =
-  document.getElementById("eventTitle");
-
-const addEventButton =
-  document.getElementById("addEvent");
-
-const closeEventButton =
-  document.getElementById("closeEvent");
-
-
-// =========================
-// Add Event Button
-// =========================
-
-if (addEventButton) {
-
-  addEventButton.addEventListener("click", () => {
-
-    if (!eventDialog) {
-      console.error(
-        "eventDialog が見つかりません"
-      );
-      return;
-    }
-
-    if (eventForm) {
-      eventForm.reset();
-    }
-
-    if (eventDate) {
-      eventDate.value = selectedDate;
-    }
-
-    if (eventTime) {
-      eventTime.value = "";
-    }
-
-    if (eventTitle) {
-      eventTitle.value = "";
-    }
-
-    setSelectedEventColor("blue");
-
-    eventDialog.dataset.editingId = "";
-
-    eventDialog.showModal();
-  });
-}
-
-
-// =========================
-// Close Event
-// =========================
-
-if (closeEventButton) {
-
-  closeEventButton.addEventListener("click", () => {
-
-    if (eventDialog) {
-      eventDialog.close();
-    }
-
-  });
-}
-
-
-// =========================
-// Save Event
-// =========================
-
-if (eventForm) {
-
-  eventForm.addEventListener("submit", event => {
-
-    event.preventDefault();
-
-    const date =
-      eventDate ? eventDate.value : "";
-
-    const time =
-      eventTime ? eventTime.value : "";
-
-    const title =
-      eventTitle
-        ? eventTitle.value.trim()
-        : "";
-
-    const color =
-      getSelectedEventColor();
-
-
-    if (!date) {
-      alert("日付を選んでね 🌙");
-      return;
-    }
-
-    if (!title) {
-      alert("予定の名前を入力してね 💤");
-      return;
-    }
-
-
-    const editingId =
-      eventDialog.dataset.editingId;
-
-
-    // -------------------------
-    // 編集
-    // -------------------------
-
-    if (editingId) {
-
-      const target =
-        data.events.find(
-          item =>
-            String(item.id) ===
-            String(editingId)
-        );
-
-      if (target) {
-
-        target.date = date;
-        target.time = time;
-        target.title = title;
-        target.color = color;
-
-      }
-
-    }
-
-
-    // -------------------------
-    // 新規追加
-    // -------------------------
-
-    else {
-
-      data.events.push({
-        id: Date.now(),
-        date: date,
-        time: time,
-        title: title,
-        color: color
-      });
-
-    }
-
-
-    saveData();
-
-    eventDialog.close();
-
-    eventDialog.dataset.editingId = "";
-
-    renderCalendar();
-    renderSelectedDate();
-    renderEvents();
-
-  });
-
-}
-
-
-// =========================
-// Render Events
-// =========================
+// ==============================
+// 予定
+// ==============================
 
 function renderEvents() {
+  if (!eventsElement) return;
 
-  const eventsContainer =
-    document.getElementById("events");
-
-  if (!eventsContainer) return;
-
-  eventsContainer.innerHTML = "";
-
+  eventsElement.innerHTML = "";
 
   const events =
     data.events
@@ -480,155 +324,218 @@ function renderEvents() {
         )
       );
 
-
   if (events.length === 0) {
-
-    eventsContainer.innerHTML =
-      `<p class="empty-message">
+    eventsElement.innerHTML =
+      `<div class="empty-message">
         予定はまだないよ 💤
-      </p>`;
+      </div>`;
 
     return;
   }
 
-
   events.forEach(event => {
-
-    const color =
-      EVENT_COLORS.includes(event.color)
-        ? event.color
-        : "blue";
-
-
-    const item =
-      document.createElement("div");
+    const item = document.createElement("div");
 
     item.className =
-      `event-item event-${color}`;
+      `event-item event-${event.color || "blue"}`;
 
+    const info = document.createElement("div");
+    info.className = "event-info";
 
-    item.innerHTML = `
-      <div class="event-info">
+    const title = document.createElement("div");
+    title.className = "event-title";
+    title.textContent = event.title;
 
-        <div class="event-time">
-          ${escapeHtml(event.time || "")}
-        </div>
+    const time = document.createElement("div");
+    time.className = "event-time";
+    time.textContent =
+      event.time || "時間なし";
 
-        <div class="event-title">
-          ${escapeHtml(event.title)}
-        </div>
+    info.appendChild(title);
+    info.appendChild(time);
 
-      </div>
+    const buttons =
+      document.createElement("div");
 
-      <div class="event-actions">
+    buttons.className = "event-actions";
 
-        <button
-          type="button"
-          class="edit-event"
-          data-id="${event.id}"
-        >
-          ✏️
-        </button>
+    const editButton =
+      document.createElement("button");
 
-        <button
-          type="button"
-          class="delete-event"
-          data-id="${event.id}"
-        >
-          🗑️
-        </button>
+    editButton.type = "button";
+    editButton.textContent = "編集";
+    editButton.className = "edit-button";
 
-      </div>
-    `;
-
-
-    eventsContainer.appendChild(item);
-
-  });
-
-
-  // 編集
-  document
-    .querySelectorAll(".edit-event")
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-          editEvent(button.dataset.id);
-        }
-      );
-
-    });
-
-
-  // 削除
-  document
-    .querySelectorAll(".delete-event")
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-          deleteEvent(button.dataset.id);
-        }
-      );
-
-    });
-
-}
-
-
-// =========================
-// Edit Event
-// =========================
-
-function editEvent(id) {
-
-  const event =
-    data.events.find(
-      item =>
-        String(item.id) ===
-        String(id)
+    editButton.addEventListener(
+      "click",
+      () => editEvent(event.id)
     );
 
-  if (!event) return;
+    const deleteButton =
+      document.createElement("button");
 
+    deleteButton.type = "button";
+    deleteButton.textContent = "削除";
+    deleteButton.className = "delete-button";
 
-  if (eventDate) {
-    eventDate.value = event.date;
-  }
+    deleteButton.addEventListener(
+      "click",
+      () => deleteEvent(event.id)
+    );
 
-  if (eventTime) {
-    eventTime.value =
-      event.time || "";
-  }
+    buttons.appendChild(editButton);
+    buttons.appendChild(deleteButton);
 
-  if (eventTitle) {
-    eventTitle.value =
-      event.title || "";
-  }
+    item.appendChild(info);
+    item.appendChild(buttons);
 
-
-  setSelectedEventColor(
-    EVENT_COLORS.includes(event.color)
-      ? event.color
-      : "blue"
-  );
-
-
-  eventDialog.dataset.editingId =
-    event.id;
-
-  eventDialog.showModal();
+    eventsElement.appendChild(item);
+  });
 }
 
 
-// =========================
-// Delete Event
-// =========================
+// ==============================
+// 予定追加
+// ==============================
 
-function deleteEvent(id) {
+if (addEventButton) {
+  addEventButton.addEventListener(
+    "click",
+    () => {
+
+      console.log("予定＋をクリック");
+
+      if (!eventDialog) {
+        alert(
+          "予定入力画面が見つかりません 💤"
+        );
+        return;
+      }
+
+      if (eventForm) {
+        eventForm.reset();
+      }
+
+      if (eventDate) {
+        eventDate.value = selectedDate;
+      }
+
+      if (eventTime) {
+        eventTime.value = "";
+      }
+
+      if (eventTitle) {
+        eventTitle.value = "";
+      }
+
+      setSelectedEventColor("blue");
+
+      eventDialog.dataset.editingId = "";
+
+      if (
+        typeof eventDialog.showModal ===
+        "function"
+      ) {
+        eventDialog.showModal();
+      } else {
+        eventDialog.setAttribute(
+          "open",
+          ""
+        );
+      }
+    }
+  );
+}
+
+
+// ==============================
+// 予定保存
+// ==============================
+
+if (eventForm) {
+  eventForm.addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      const date =
+        eventDate?.value || "";
+
+      const time =
+        eventTime?.value || "";
+
+      const title =
+        eventTitle?.value.trim() || "";
+
+      const color =
+        getSelectedEventColor();
+
+      if (!date) {
+        alert("日付を選んでね 🌙");
+        return;
+      }
+
+      if (!title) {
+        alert(
+          "予定の名前を入力してね 💤"
+        );
+        return;
+      }
+
+      const editingId =
+        eventDialog?.dataset.editingId;
+
+      if (editingId) {
+
+        const target =
+          data.events.find(
+            item =>
+              String(item.id) ===
+              String(editingId)
+          );
+
+        if (target) {
+          target.date = date;
+          target.time = time;
+          target.title = title;
+          target.color = color;
+        }
+
+      } else {
+
+        data.events.push({
+          id: Date.now(),
+          date,
+          time,
+          title,
+          color
+        });
+
+      }
+
+      saveData();
+
+      if (eventDialog) {
+        eventDialog.close();
+        eventDialog.dataset.editingId = "";
+      }
+
+      selectedDate = date;
+
+      renderCalendar();
+      renderSelectedDate();
+      renderEvents();
+    }
+  );
+}
+
+
+// ==============================
+// 予定編集
+// ==============================
+
+function editEvent(id) {
 
   const target =
     data.events.find(
@@ -637,17 +544,48 @@ function deleteEvent(id) {
         String(id)
     );
 
-  if (!target) return;
+  if (!target || !eventDialog) {
+    return;
+  }
+
+  if (eventDate) {
+    eventDate.value = target.date;
+  }
+
+  if (eventTime) {
+    eventTime.value =
+      target.time || "";
+  }
+
+  if (eventTitle) {
+    eventTitle.value =
+      target.title || "";
+  }
+
+  setSelectedEventColor(
+    target.color || "blue"
+  );
+
+  eventDialog.dataset.editingId =
+    target.id;
+
+  eventDialog.showModal();
+}
 
 
-  const result =
-    confirm(
-      `「${target.title}」を削除する？`
-    );
+// ==============================
+// 予定削除
+// ==============================
 
+function deleteEvent(id) {
 
-  if (!result) return;
-
+  if (
+    !confirm(
+      "この予定を削除する？ 💤"
+    )
+  ) {
+    return;
+  }
 
   data.events =
     data.events.filter(
@@ -656,7 +594,6 @@ function deleteEvent(id) {
         String(id)
     );
 
-
   saveData();
 
   renderCalendar();
@@ -664,697 +601,56 @@ function deleteEvent(id) {
 }
 
 
-// =========================
-// Memo
-// =========================
+// ==============================
+// 予定ダイアログを閉じる
+// ==============================
 
-const memoDialog =
-  document.getElementById("memoDialog");
-
-const memoForm =
-  document.getElementById("memoForm");
-
-const memoText =
-  document.getElementById("memoText");
-
-const addMemoButton =
-  document.getElementById("addMemo");
-
-const closeMemoButton =
-  document.getElementById("closeMemo");
-
-
-if (addMemoButton) {
-
-  addMemoButton.addEventListener(
+if (closeEventButton) {
+  closeEventButton.addEventListener(
     "click",
     () => {
-
-      if (memoForm) {
-        memoForm.reset();
-      }
-
-      if (memoDialog) {
-        memoDialog.showModal();
-      }
-
+      eventDialog?.close();
     }
   );
-
 }
 
 
-if (closeMemoButton) {
-
-  closeMemoButton.addEventListener(
-    "click",
-    () => {
-
-      if (memoDialog) {
-        memoDialog.close();
-      }
-
-    }
-  );
-
-}
-
-
-if (memoForm) {
-
-  memoForm.addEventListener(
-    "submit",
-    event => {
-
-      event.preventDefault();
-
-      const text =
-        memoText
-          ? memoText.value.trim()
-          : "";
-
-      if (!text) return;
-
-
-      data.memos.push({
-        id: Date.now(),
-        date: selectedDate,
-        text: text
-      });
-
-
-      saveData();
-
-      memoDialog.close();
-
-      renderMemos();
-
-    }
-  );
-
-}
-
-
-function renderMemos() {
-
-  const memosContainer =
-    document.getElementById("memos");
-
-  if (!memosContainer) return;
-
-  memosContainer.innerHTML = "";
-
-
-  const memos =
-    data.memos.filter(
-      memo => memo.date === selectedDate
-    );
-
-
-  if (memos.length === 0) {
-
-    memosContainer.innerHTML =
-      `<p class="empty-message">
-        メモはまだないよ 📝
-      </p>`;
-
-    return;
-  }
-
-
-  memos.forEach(memo => {
-
-    const item =
-      document.createElement("div");
-
-    item.className =
-      "memo-item";
-
-
-    item.innerHTML = `
-      <span>
-        ${escapeHtml(memo.text)}
-      </span>
-
-      <button
-        type="button"
-        class="delete-memo"
-        data-id="${memo.id}"
-      >
-        🗑️
-      </button>
-    `;
-
-
-    memosContainer.appendChild(item);
-
-  });
-
-
-  document
-    .querySelectorAll(".delete-memo")
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          data.memos =
-            data.memos.filter(
-              memo =>
-                String(memo.id) !==
-                String(button.dataset.id)
-            );
-
-          saveData();
-
-          renderMemos();
-
-        }
-      );
-
-    });
-
-}
-
-
-// =========================
-// Todo
-// =========================
-
-const todoForm =
-  document.getElementById("todoForm");
-
-const todoInput =
-  document.getElementById("todoInput");
-
-const todoList =
-  document.getElementById("todoList");
-
-
-if (todoForm) {
-
-  todoForm.addEventListener(
-    "submit",
-    event => {
-
-      event.preventDefault();
-
-      const text =
-        todoInput
-          ? todoInput.value.trim()
-          : "";
-
-      if (!text) return;
-
-
-      data.todos.push({
-        id: Date.now(),
-        text: text,
-        done: false
-      });
-
-
-      if (todoInput) {
-        todoInput.value = "";
-      }
-
-
-      saveData();
-
-      renderTodos();
-
-    }
-  );
-
-}
-
-
-function renderTodos() {
-
-  if (!todoList) return;
-
-  todoList.innerHTML = "";
-
-
-  if (data.todos.length === 0) {
-
-    todoList.innerHTML =
-      `<p class="empty-message">
-        Todoはまだないよ 💤
-      </p>`;
-
-    return;
-  }
-
-
-  data.todos.forEach(todo => {
-
-    const item =
-      document.createElement("div");
-
-    item.className =
-      `todo-item ${todo.done ? "done" : ""}`;
-
-
-    item.innerHTML = `
-      <label class="todo-check">
-
-        <input
-          type="checkbox"
-          data-id="${todo.id}"
-          ${todo.done ? "checked" : ""}
-        >
-
-        <span>
-          ${escapeHtml(todo.text)}
-        </span>
-
-      </label>
-
-      <button
-        type="button"
-        class="delete-todo"
-        data-id="${todo.id}"
-      >
-        🗑️
-      </button>
-    `;
-
-
-    todoList.appendChild(item);
-
-  });
-
-
-  document
-    .querySelectorAll(".todo-check input")
-    .forEach(checkbox => {
-
-      checkbox.addEventListener(
-        "change",
-        () => {
-
-          const todo =
-            data.todos.find(
-              item =>
-                String(item.id) ===
-                String(checkbox.dataset.id)
-            );
-
-          if (!todo) return;
-
-          todo.done =
-            checkbox.checked;
-
-          saveData();
-
-          renderTodos();
-
-        }
-      );
-
-    });
-
-
-  document
-    .querySelectorAll(".delete-todo")
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          data.todos =
-            data.todos.filter(
-              todo =>
-                String(todo.id) !==
-                String(button.dataset.id)
-            );
-
-          saveData();
-
-          renderTodos();
-
-        }
-      );
-
-    });
-
-}
-
-
-// =========================
-// Period
-// =========================
-
-const addPeriodButton =
-  document.getElementById("addPeriod");
-
-
-if (addPeriodButton) {
-
-  addPeriodButton.addEventListener(
-    "click",
-    () => {
-
-      const date =
-        prompt(
-          "生理開始日を入力してね\n例：2026-10-03",
-          selectedDate
-        );
-
-
-      if (!date) return;
-
-
-      const parsed =
-        new Date(date + "T00:00:00");
-
-
-      if (Number.isNaN(parsed.getTime())) {
-
-        alert(
-          "日付の形式が正しくないよ"
-        );
-
-        return;
-      }
-
-
-      const exists =
-        data.periods.some(
-          period =>
-            period.start === date
-        );
-
-
-      if (exists) {
-
-        alert(
-          "その日はすでに登録されているよ"
-        );
-
-        return;
-      }
-
-
-      data.periods.push({
-        id: Date.now(),
-        start: date
-      });
-
-
-      data.periods.sort(
-        (a, b) =>
-          a.start.localeCompare(b.start)
-      );
-
-
-      saveData();
-
-      renderPeriodInfo();
-      renderCalendar();
-
-    }
-  );
-
-}
-
-
-function renderPeriodInfo() {
-
-  const lastPeriod =
-    document.getElementById("lastPeriod");
-
-  const averageCycle =
-    document.getElementById("averageCycle");
-
-  const nextPeriod =
-    document.getElementById("nextPeriod");
-
-  const periodHistory =
-    document.getElementById("periodHistory");
-
-
-  if (
-    !lastPeriod ||
-    !averageCycle ||
-    !nextPeriod ||
-    !periodHistory
-  ) {
-    return;
-  }
-
-
-  if (data.periods.length === 0) {
-
-    lastPeriod.textContent =
-      "未登録";
-
-    averageCycle.textContent =
-      "未登録";
-
-    nextPeriod.textContent =
-      "未登録";
-
-    periodHistory.innerHTML =
-      `<p class="empty-message">
-        記録はまだないよ 🌙
-      </p>`;
-
-    return;
-  }
-
-
-  const sortedPeriods =
-    [...data.periods].sort(
-      (a, b) =>
-        a.start.localeCompare(b.start)
-    );
-
-
-  const latest =
-    sortedPeriods[
-      sortedPeriods.length - 1
-    ];
-
-
-  lastPeriod.textContent =
-    formatDisplayDate(latest.start);
-
-
-  if (sortedPeriods.length < 2) {
-
-    averageCycle.textContent =
-      "データ不足";
-
-    nextPeriod.textContent =
-      "データ不足";
-
-  } else {
-
-    const differences = [];
-
-
-    for (
-      let i = 1;
-      i < sortedPeriods.length;
-      i++
-    ) {
-
-      const previous =
-        new Date(
-          sortedPeriods[i - 1].start +
-          "T00:00:00"
-        );
-
-
-      const current =
-        new Date(
-          sortedPeriods[i].start +
-          "T00:00:00"
-        );
-
-
-      const diff =
-        Math.round(
-          (current - previous) /
-          (1000 * 60 * 60 * 24)
-        );
-
-
-      if (diff > 0) {
-        differences.push(diff);
-      }
-
-    }
-
-
-    if (differences.length === 0) {
-
-      averageCycle.textContent =
-        "計算不可";
-
-      nextPeriod.textContent =
-        "計算不可";
-
-    } else {
-
-      const average =
-        Math.round(
-          differences.reduce(
-            (sum, value) =>
-              sum + value,
-            0
-          ) /
-          differences.length
-        );
-
-
-      averageCycle.textContent =
-        `${average}日`;
-
-
-      const latestDate =
-        new Date(
-          latest.start +
-          "T00:00:00"
-        );
-
-
-      latestDate.setDate(
-        latestDate.getDate() +
-        average
-      );
-
-
-      nextPeriod.textContent =
-        formatDisplayDate(
-          formatDate(latestDate)
-        );
-
-    }
-
-  }
-
-
-  // 履歴
-  periodHistory.innerHTML = "";
-
-
-  [...sortedPeriods]
-    .reverse()
-    .forEach(period => {
-
-      const item =
-        document.createElement("div");
-
-      item.className =
-        "period-history-item";
-
-
-      item.innerHTML = `
-        <span>
-          ${formatDisplayDate(period.start)}
-        </span>
-
-        <button
-          type="button"
-          class="delete-period"
-          data-id="${period.id}"
-        >
-          🗑️
-        </button>
-      `;
-
-
-      periodHistory.appendChild(item);
-
-    });
-
-
-  document
-    .querySelectorAll(".delete-period")
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          data.periods =
-            data.periods.filter(
-              period =>
-                String(period.id) !==
-                String(button.dataset.id)
-            );
-
-
-          saveData();
-
-          renderPeriodInfo();
-          renderCalendar();
-
-        }
-      );
-
-    });
-
-}
-
-
-// =========================
-// Month Navigation
-// =========================
-
-const prevMonth =
-  document.getElementById("prevMonth");
-
-const nextMonth =
-  document.getElementById("nextMonth");
-
-const todayButton =
-  document.getElementById("todayButton");
-
+// ==============================
+// 月移動
+// ==============================
 
 if (prevMonth) {
-
   prevMonth.addEventListener(
     "click",
     () => {
-
       currentDate.setMonth(
         currentDate.getMonth() - 1
       );
 
       renderCalendar();
-
     }
   );
-
 }
 
-
 if (nextMonth) {
-
   nextMonth.addEventListener(
     "click",
     () => {
-
       currentDate.setMonth(
         currentDate.getMonth() + 1
       );
 
       renderCalendar();
-
     }
   );
-
 }
 
 
-if (todayButton) {
+// ==============================
+// 今日
+// ==============================
 
+if (todayButton) {
   todayButton.addEventListener(
     "click",
     () => {
@@ -1368,25 +664,447 @@ if (todayButton) {
       selectedDate =
         formatDate(today);
 
-
       renderCalendar();
       renderSelectedDate();
       renderEvents();
       renderMemos();
-
     }
   );
-
 }
 
 
-// =========================
-// Start
-// =========================
+// ==============================
+// メモ
+// ==============================
+
+if (addMemoButton) {
+  addMemoButton.addEventListener(
+    "click",
+    () => {
+
+      memoForm?.reset();
+
+      memoDialog?.showModal();
+    }
+  );
+}
+
+if (closeMemoButton) {
+  closeMemoButton.addEventListener(
+    "click",
+    () => {
+      memoDialog?.close();
+    }
+  );
+}
+
+if (memoForm) {
+  memoForm.addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      const text =
+        memoText?.value.trim();
+
+      if (!text) return;
+
+      data.memos.push({
+        id: Date.now(),
+        date: selectedDate,
+        text
+      });
+
+      saveData();
+
+      memoDialog?.close();
+
+      renderMemos();
+    }
+  );
+}
+
+function renderMemos() {
+
+  if (!memosElement) return;
+
+  memosElement.innerHTML = "";
+
+  const memos =
+    data.memos.filter(
+      memo =>
+        memo.date === selectedDate
+    );
+
+  if (memos.length === 0) {
+
+    memosElement.innerHTML =
+      `<div class="empty-message">
+        メモはまだないよ 📝
+      </div>`;
+
+    return;
+  }
+
+  memos.forEach(memo => {
+
+    const item =
+      document.createElement("div");
+
+    item.className = "memo-item";
+
+    const text =
+      document.createElement("div");
+
+    text.textContent = memo.text;
+
+    const button =
+      document.createElement("button");
+
+    button.type = "button";
+    button.textContent = "×";
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        data.memos =
+          data.memos.filter(
+            item =>
+              item.id !== memo.id
+          );
+
+        saveData();
+
+        renderMemos();
+      }
+    );
+
+    item.appendChild(text);
+    item.appendChild(button);
+
+    memosElement.appendChild(item);
+  });
+}
+
+
+// ==============================
+// TODO
+// ==============================
+
+if (todoForm) {
+  todoForm.addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      const text =
+        todoInput?.value.trim();
+
+      if (!text) return;
+
+      data.todos.push({
+        id: Date.now(),
+        text,
+        completed: false
+      });
+
+      saveData();
+
+      todoInput.value = "";
+
+      renderTodos();
+    }
+  );
+}
+
+function renderTodos() {
+
+  if (!todoList) return;
+
+  todoList.innerHTML = "";
+
+  data.todos.forEach(todo => {
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "todo-item";
+
+    if (todo.completed) {
+      item.classList.add("completed");
+    }
+
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type = "checkbox";
+    checkbox.checked =
+      todo.completed;
+
+    checkbox.addEventListener(
+      "change",
+      () => {
+
+        todo.completed =
+          checkbox.checked;
+
+        saveData();
+        renderTodos();
+      }
+    );
+
+    const text =
+      document.createElement("span");
+
+    text.textContent = todo.text;
+
+    const deleteButton =
+      document.createElement("button");
+
+    deleteButton.type = "button";
+    deleteButton.textContent = "×";
+
+    deleteButton.addEventListener(
+      "click",
+      () => {
+
+        data.todos =
+          data.todos.filter(
+            item =>
+              item.id !== todo.id
+          );
+
+        saveData();
+
+        renderTodos();
+      }
+    );
+
+    item.appendChild(checkbox);
+    item.appendChild(text);
+    item.appendChild(deleteButton);
+
+    todoList.appendChild(item);
+  });
+}
+
+
+// ==============================
+// 生理記録
+// ==============================
+
+if (addPeriodButton) {
+
+  addPeriodButton.addEventListener(
+    "click",
+    () => {
+
+      const date =
+        prompt(
+          "生理開始日を入力してね\n例：2026-10-03",
+          selectedDate
+        );
+
+      if (!date) return;
+
+      if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(date)
+      ) {
+        alert(
+          "YYYY-MM-DD形式で入力してね 🌷"
+        );
+        return;
+      }
+
+      data.periods.push({
+        id: Date.now(),
+        date
+      });
+
+      saveData();
+
+      renderPeriod();
+      renderCalendar();
+    }
+  );
+}
+
+function renderPeriod() {
+
+  if (!lastPeriod) return;
+
+  const sorted =
+    [...data.periods].sort(
+      (a, b) =>
+        b.date.localeCompare(a.date)
+    );
+
+  if (sorted.length === 0) {
+
+    lastPeriod.textContent =
+      "未登録";
+
+    averageCycle.textContent =
+      "未登録";
+
+    nextPeriod.textContent =
+      "未登録";
+
+    if (periodHistory) {
+      periodHistory.innerHTML = "";
+    }
+
+    return;
+  }
+
+  lastPeriod.textContent =
+    formatJapaneseDate(
+      sorted[0].date
+    );
+
+  // 平均周期
+  const intervals = [];
+
+  for (
+    let i = 0;
+    i < sorted.length - 1;
+    i++
+  ) {
+
+    const current =
+      new Date(
+        sorted[i].date + "T00:00:00"
+      );
+
+    const previous =
+      new Date(
+        sorted[i + 1].date + "T00:00:00"
+      );
+
+    const diff =
+      Math.round(
+        (
+          current - previous
+        ) /
+        (
+          1000 *
+          60 *
+          60 *
+          24
+        )
+      );
+
+    if (diff > 0) {
+      intervals.push(diff);
+    }
+  }
+
+  let cycle = null;
+
+  if (intervals.length > 0) {
+
+    cycle =
+      Math.round(
+        intervals.reduce(
+          (a, b) => a + b,
+          0
+        ) /
+        intervals.length
+      );
+
+    averageCycle.textContent =
+      `${cycle}日`;
+
+    const next =
+      new Date(
+        sorted[0].date + "T00:00:00"
+      );
+
+    next.setDate(
+      next.getDate() + cycle
+    );
+
+    nextPeriod.textContent =
+      formatJapaneseDate(
+        formatDate(next)
+      );
+
+  } else {
+
+    averageCycle.textContent =
+      "データ不足";
+
+    nextPeriod.textContent =
+      "データ不足";
+  }
+
+  if (periodHistory) {
+
+    periodHistory.innerHTML = "";
+
+    sorted.forEach(period => {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "period-history-item";
+
+      const date =
+        document.createElement("span");
+
+      date.textContent =
+        formatJapaneseDate(
+          period.date
+        );
+
+      const button =
+        document.createElement("button");
+
+      button.type = "button";
+      button.textContent = "×";
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          data.periods =
+            data.periods.filter(
+              item =>
+                item.id !== period.id
+            );
+
+          saveData();
+
+          renderPeriod();
+          renderCalendar();
+        }
+      );
+
+      item.appendChild(date);
+      item.appendChild(button);
+
+      periodHistory.appendChild(item);
+    });
+  }
+}
+
+
+// ==============================
+// 初期表示
+// ==============================
 
 renderCalendar();
 renderSelectedDate();
 renderEvents();
 renderMemos();
 renderTodos();
-renderPeriodInfo();
+renderPeriod();
+
+console.log(
+  "🌙 sleepy calendar loaded!"
+);
