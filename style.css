@@ -1094,3 +1094,208 @@ textarea::placeholder {
 .calendar-card {
   animation: sleepyFade 0.35s ease;
 }
+/* =========================
+   Sleepy Event Color Picker
+========================= */
+
+.event-color-picker {
+  margin-top: 16px;
+}
+
+.color-picker-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #6d91a8;
+  font-size: 14px;
+}
+
+/* 色ボタン */
+.color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 7px 11px;
+
+  border: 1px solid #e5f1f7;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+/* 本物のradioは隠す */
+.color-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 色の丸 */
+.color-dot {
+  width: 14px;
+  height: 14px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.7),
+    0 1px 3px rgba(120,160,180,0.12);
+}
+
+/* 色 */
+.color-blue .color-dot {
+  background: #b9e6f7;
+}
+
+.color-pink .color-dot {
+  background: #f5c4d8;
+}
+
+.color-purple .color-dot {
+  background: #d2c4ed;
+}
+
+.color-yellow .color-dot {
+  background: #f7dfa1;
+}
+
+.color-green .color-dot {
+  background: #b9e3cf;
+}
+
+/* 色の名前 */
+.color-name {
+  font-size: 12px;
+  color: #7895a5;
+}
+
+/* 選択中 */
+.color-option:has(input:checked) {
+  border-color: #a9dcef;
+  background: #f2fbff;
+
+  box-shadow:
+    0 3px 10px rgba(130,190,215,0.15);
+}
+
+/* 選択中の丸 */
+.color-option:has(input:checked) .color-dot {
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.9),
+    0 0 0 5px rgba(169,220,239,0.55);
+}
+
+/* ホバー */
+@media (hover: hover) {
+  .color-option:hover {
+    transform: translateY(-1px);
+
+    border-color: #c8e8f3;
+
+    box-shadow:
+      0 4px 12px rgba(140,190,210,0.12);
+  }
+}
+
+/* 押したとき */
+.color-option:active {
+  transform: scale(0.97);
+}
+
+
+/* =========================
+   Event Card Colors
+========================= */
+
+.event-item {
+  position: relative;
+  overflow: hidden;
+
+  border-left-width: 5px;
+  border-left-style: solid;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.event-blue {
+  border-left-color: #b9e6f7 !important;
+  background: #f8fdff;
+}
+
+.event-pink {
+  border-left-color: #f5c4d8 !important;
+  background: #fff9fb;
+}
+
+.event-purple {
+  border-left-color: #d2c4ed !important;
+  background: #fcfaff;
+}
+
+.event-yellow {
+  border-left-color: #f7dfa1 !important;
+  background: #fffdf5;
+}
+
+.event-green {
+  border-left-color: #b9e3cf !important;
+  background: #f8fdf9;
+}
+
+
+/* =========================
+   Calendar Event Dots
+========================= */
+
+.event-mark {
+  width: 7px;
+  height: 7px;
+
+  display: inline-block;
+
+  margin: 3px 2px 0;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 1px 3px rgba(120,160,180,0.15);
+}
+
+.event-mark.event-blue {
+  background: #b9e6f7;
+}
+
+.event-mark.event-pink {
+  background: #f5c4d8;
+}
+
+.event-mark.event-purple {
+  background: #d2c4ed;
+}
+
+.event-mark.event-yellow {
+  background: #f7dfa1;
+}
+
+.event-mark.event-green {
+  background: #b9e3cf;
+}
