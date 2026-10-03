@@ -3,19 +3,62 @@
 // app.js
 // ==============================
 
-let data = JSON.parse(
-  localStorage.getItem("sleepyCalendar")
-) || {
-  events: [],
-  memos: [],
-  todos: [],
-  periods: []
-};
+// ==============================
+// sleepy calendar
+// app.js
+// ==============================
 
-data.events = data.events || [];
-data.memos = data.memos || [];
-data.todos = data.todos || [];
-data.periods = data.periods || [];
+// 保存データを安全に読み込む
+let data;
+
+try {
+  const savedData =
+    localStorage.getItem("sleepyCalendar");
+
+  data = savedData
+    ? JSON.parse(savedData)
+    : {};
+} catch (error) {
+  console.warn(
+    "保存データを読み込めなかったため、初期化します。",
+    error
+  );
+
+  data = {};
+}
+
+// データが壊れていても必ず配列にする
+data.events = Array.isArray(data.events)
+  ? data.events
+  : [];
+
+data.memos = Array.isArray(data.memos)
+  ? data.memos
+  : [];
+
+data.todos = Array.isArray(data.todos)
+  ? data.todos
+  : [];
+
+data.periods = Array.isArray(data.periods)
+  ? data.periods
+  : [];
+
+
+// ==============================
+// 予定カラー
+// ==============================
+
+const EVENT_COLORS = [
+  "blue",
+  "pink",
+  "purple",
+  "yellow",
+  "green"
+];
+
+let currentDate = new Date();
+let selectedDate = formatDate(new Date());
 
 const EVENT_COLORS = [
   "blue",
