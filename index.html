@@ -342,16 +342,42 @@
           required
           autocomplete="off"
         >
-<label>
-  色
-  <select id="eventColor">
-    <option value="blue">🩵 水色</option>
-    <option value="pink">🩷 ピンク</option>
-    <option value="purple">💜 紫</option>
-    <option value="yellow">💛 黄色</option>
-    <option value="green">💚 ミント</option>
-  </select>
-</label>
+        
+<div class="event-color-picker">
+  <span class="color-picker-label">予定の色 🌙</span>
+
+  <div class="color-options">
+    <label class="color-option color-blue">
+      <input type="radio" name="eventColor" value="blue" checked>
+      <span class="color-dot"></span>
+      <span class="color-name">sky</span>
+    </label>
+
+    <label class="color-option color-pink">
+      <input type="radio" name="eventColor" value="pink">
+      <span class="color-dot"></span>
+      <span class="color-name">dream</span>
+    </label>
+
+    <label class="color-option color-purple">
+      <input type="radio" name="eventColor" value="purple">
+      <span class="color-dot"></span>
+      <span class="color-name">moon</span>
+    </label>
+
+    <label class="color-option color-yellow">
+      <input type="radio" name="eventColor" value="yellow">
+      <span class="color-dot"></span>
+      <span class="color-name">star</span>
+    </label>
+
+    <label class="color-option color-green">
+      <input type="radio" name="eventColor" value="green">
+      <span class="color-dot"></span>
+      <span class="color-name">mint</span>
+    </label>
+  </div>
+</div>
         
       </label>
 
