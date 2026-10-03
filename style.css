@@ -70,6 +70,19 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* sleepy感の月と星 */
+.header h1::before {
+  content: "☾ ";
+  font-family: Arial, sans-serif;
+  color: #b9dff2;
+}
+
+.header h1::after {
+  content: " ✦";
+  font-family: Arial, sans-serif;
+  color: #d8c8ed;
+}
+
 .header p {
   margin: 7px 0 0;
 
@@ -169,13 +182,21 @@ button {
 
   transition:
     background 0.15s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .add-button:hover {
   background: #d6edfb;
 
   transform: scale(1.05);
+
+  box-shadow:
+    0 4px 10px rgba(150, 200, 220, 0.12);
+}
+
+.add-button:active {
+  transform: scale(0.97);
 }
 
 
@@ -356,7 +377,8 @@ button {
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .calendar-day:hover {
@@ -365,6 +387,9 @@ button {
   border-color: #d9edf8;
 
   transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 12px rgba(160, 205, 225, 0.12);
 }
 
 .calendar-day.empty {
@@ -377,6 +402,8 @@ button {
   transform: none;
 
   border-color: transparent;
+
+  box-shadow: none;
 }
 
 
@@ -384,6 +411,9 @@ button {
   background: #e8f6ff;
 
   border-color: #a9d8f3;
+
+  box-shadow:
+    0 4px 12px rgba(160, 205, 225, 0.12);
 }
 
 
@@ -402,34 +432,52 @@ button {
 
 /* 日曜 */
 
-.calendar-day:nth-child(7n + 1)
-.day-number {
+.calendar-day:nth-child(7n + 1) .day-number {
   color: #e2a6b6;
 }
 
 
 /* 土曜 */
 
-.calendar-day:nth-child(7n)
-.day-number {
+.calendar-day:nth-child(7n) .day-number {
   color: #79a9c8;
 }
 
 
-/* 予定マーク */
+/* ========================================
+   予定マーク
+======================================== */
+
+.event-marks {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 2px;
+
+  margin-top: 6px;
+}
 
 .event-mark {
-  margin-top: 12px;
+  width: 7px;
+  height: 7px;
 
-  color: #8bc9ed;
+  display: inline-block;
 
-  font-family: Arial, sans-serif;
+  margin: 0 1px;
 
-  font-size: 10px;
+  border-radius: 50%;
+
+  box-shadow:
+    0 1px 3px rgba(120, 160, 180, 0.15);
 }
 
 
-/* 生理マーク */
+/* ========================================
+   生理マーク
+======================================== */
 
 .period-mark {
   position: absolute;
@@ -508,6 +556,8 @@ button {
 }
 
 .event-item {
+  position: relative;
+
   display: flex;
 
   align-items: center;
@@ -522,7 +572,24 @@ button {
 
   border: 1px solid #e4f2f9;
 
+  border-left-width: 5px;
+
+  border-left-style: solid;
+
   border-radius: 13px;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.event-item:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 5px 14px rgba(150, 190, 210, 0.12);
 }
 
 .event-info {
@@ -555,6 +622,66 @@ button {
   gap: 5px;
 
   flex-shrink: 0;
+}
+
+
+/* ========================================
+   Event Colors
+======================================== */
+
+.event-blue {
+  border-left-color: #b9e6f7 !important;
+
+  background: #f8fdff;
+}
+
+.event-pink {
+  border-left-color: #f5c4d8 !important;
+
+  background: #fff9fb;
+}
+
+.event-purple {
+  border-left-color: #d2c4ed !important;
+
+  background: #fcfaff;
+}
+
+.event-yellow {
+  border-left-color: #f7dfa1 !important;
+
+  background: #fffdf5;
+}
+
+.event-green {
+  border-left-color: #b9e3cf !important;
+
+  background: #f8fdf9;
+}
+
+
+/* ========================================
+   Calendar Event Dot Colors
+======================================== */
+
+.event-mark.event-blue {
+  background: #b9e6f7;
+}
+
+.event-mark.event-pink {
+  background: #f5c4d8;
+}
+
+.event-mark.event-purple {
+  background: #d2c4ed;
+}
+
+.event-mark.event-yellow {
+  background: #f7dfa1;
+}
+
+.event-mark.event-green {
+  background: #b9e3cf;
 }
 
 
@@ -948,6 +1075,160 @@ textarea::placeholder {
 
 
 /* ========================================
+   Event Color Picker
+======================================== */
+
+.event-color-picker {
+  margin-top: 16px;
+}
+
+.color-picker-label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: #6d91a8;
+
+  font-size: 14px;
+}
+
+.color-options {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.color-option {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 7px 11px;
+
+  border: 1px solid #e5f1f7;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.color-option input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.color-dot {
+  width: 14px;
+  height: 14px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.7),
+    0 1px 3px rgba(120,160,180,0.12);
+}
+
+.color-blue .color-dot {
+  background: #b9e6f7;
+}
+
+.color-pink .color-dot {
+  background: #f5c4d8;
+}
+
+.color-purple .color-dot {
+  background: #d2c4ed;
+}
+
+.color-yellow .color-dot {
+  background: #f7dfa1;
+}
+
+.color-green .color-dot {
+  background: #b9e3cf;
+}
+
+.color-name {
+  font-size: 12px;
+
+  color: #7895a5;
+}
+
+.color-option:has(input:checked) {
+  border-color: #a9dcef;
+
+  background: #f2fbff;
+
+  box-shadow:
+    0 3px 10px rgba(130,190,215,0.15);
+}
+
+.color-option:has(input:checked) .color-dot {
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,0.9),
+    0 0 0 5px rgba(169,220,239,0.55);
+}
+
+@media (hover: hover) {
+  .color-option:hover {
+    transform: translateY(-1px);
+
+    border-color: #c8e8f3;
+
+    box-shadow:
+      0 4px 12px rgba(140,190,210,0.12);
+  }
+}
+
+.color-option:active {
+  transform: scale(0.97);
+}
+
+
+/* ========================================
+   Animation
+======================================== */
+
+@keyframes sleepyFade {
+  from {
+    opacity: 0;
+
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+.card,
+.calendar-card {
+  animation: sleepyFade 0.35s ease;
+}
+
+
+/* ========================================
    Responsive
 ======================================== */
 
@@ -1033,10 +1314,13 @@ textarea::placeholder {
     font-size: 12px;
   }
 
-  .event-mark {
-    margin-top: 7px;
+  .event-marks {
+    margin-top: 4px;
+  }
 
-    font-size: 8px;
+  .event-mark {
+    width: 6px;
+    height: 6px;
   }
 
   .period-mark {
@@ -1067,258 +1351,49 @@ textarea::placeholder {
     font-size: 11px;
   }
 
+  .color-options {
+    gap: 6px;
+  }
+
+  .color-option {
+    padding: 6px 9px;
+  }
+
+  .color-name {
+    font-size: 11px;
+  }
+
 }
 
 
 /* ========================================
-   Animation
+   Very Small Screens
 ======================================== */
 
-@keyframes sleepyFade {
+@media (max-width: 380px) {
 
-  from {
-    opacity: 0;
-
-    transform: translateY(3px);
+  .header h1 {
+    font-size: 21px;
   }
 
-  to {
-    opacity: 1;
+  .today-button {
+    padding: 7px 9px;
 
-    transform: translateY(0);
+    font-size: 12px;
   }
 
-}
-
-.card,
-.calendar-card {
-  animation: sleepyFade 0.35s ease;
-}
-/* =========================
-   Sleepy Event Color Picker
-========================= */
-
-.event-color-picker {
-  margin-top: 16px;
-}
-
-.color-picker-label {
-  display: block;
-  margin-bottom: 10px;
-  color: #6d91a8;
-  font-size: 14px;
-}
-
-/* 色ボタン */
-.color-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.color-option {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  padding: 7px 11px;
-
-  border: 1px solid #e5f1f7;
-  border-radius: 999px;
-
-  background: #ffffff;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
-}
-
-/* 本物のradioは隠す */
-.color-option input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* 色の丸 */
-.color-dot {
-  width: 14px;
-  height: 14px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  box-shadow:
-    inset 0 1px 2px rgba(255,255,255,0.7),
-    0 1px 3px rgba(120,160,180,0.12);
-}
-
-/* 色 */
-.color-blue .color-dot {
-  background: #b9e6f7;
-}
-
-.color-pink .color-dot {
-  background: #f5c4d8;
-}
-
-.color-purple .color-dot {
-  background: #d2c4ed;
-}
-
-.color-yellow .color-dot {
-  background: #f7dfa1;
-}
-
-.color-green .color-dot {
-  background: #b9e3cf;
-}
-
-/* 色の名前 */
-.color-name {
-  font-size: 12px;
-  color: #7895a5;
-}
-
-/* 選択中 */
-.color-option:has(input:checked) {
-  border-color: #a9dcef;
-  background: #f2fbff;
-
-  box-shadow:
-    0 3px 10px rgba(130,190,215,0.15);
-}
-
-/* 選択中の丸 */
-.color-option:has(input:checked) .color-dot {
-  box-shadow:
-    0 0 0 3px rgba(255,255,255,0.9),
-    0 0 0 5px rgba(169,220,239,0.55);
-}
-
-/* ホバー */
-@media (hover: hover) {
-  .color-option:hover {
-    transform: translateY(-1px);
-
-    border-color: #c8e8f3;
-
-    box-shadow:
-      0 4px 12px rgba(140,190,210,0.12);
+  .calendar-card {
+    padding: 10px;
   }
-}
 
-/* 押したとき */
-.color-option:active {
-  transform: scale(0.97);
-}
+  .calendar-day {
+    min-height: 48px;
 
+    padding: 5px;
+  }
 
-/* =========================
-   Event Card Colors
-========================= */
+  .day-number {
+    font-size: 11px;
+  }
 
-.event-item {
-  position: relative;
-  overflow: hidden;
-
-  border-left-width: 5px;
-  border-left-style: solid;
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
-}
-
-.event-blue {
-  border-left-color: #b9e6f7 !important;
-  background: #f8fdff;
-}
-
-.event-pink {
-  border-left-color: #f5c4d8 !important;
-  background: #fff9fb;
-}
-
-.event-purple {
-  border-left-color: #d2c4ed !important;
-  background: #fcfaff;
-}
-
-.event-yellow {
-  border-left-color: #f7dfa1 !important;
-  background: #fffdf5;
-}
-
-.event-green {
-  border-left-color: #b9e3cf !important;
-  background: #f8fdf9;
-}
-
-
-/* =========================
-   Calendar Event Dots
-========================= */
-
-.event-mark {
-  width: 7px;
-  height: 7px;
-
-  display: inline-block;
-
-  margin: 3px 2px 0;
-
-  border-radius: 50%;
-
-  box-shadow:
-    0 1px 3px rgba(120,160,180,0.15);
-}
-
-.event-mark.event-blue {
-  background: #b9e6f7;
-}
-
-.event-mark.event-pink {
-  background: #f5c4d8;
-}
-
-.event-mark.event-purple {
-  background: #d2c4ed;
-}
-
-.event-mark.event-yellow {
-  background: #f7dfa1;
-}
-
-.event-mark.event-green {
-  background: #b9e3cf;
-}
-/* =========================
-   🌙 Sleepy Mini Decoration
-========================= */
-
-.header h1::before {
-  content: "☾ ";
-  font-family: Arial, sans-serif;
-  color: #b9dff2;
-}
-
-.header h1::after {
-  content: " ✦";
-  font-family: Arial, sans-serif;
-  color: #d8c8ed;
-}
-
-.event-item:hover {
-  box-shadow: 0 4px 12px rgba(150, 190, 210, 0.12);
-}
-
-.add-button:hover {
-  box-shadow: 0 4px 10px rgba(150, 200, 220, 0.12);
 }
